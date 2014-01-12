@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>evolution</artifactId>
+    <packaging>swf</packaging>
+    <groupId>evolution</groupId>
+    <version>1.0.0</version>
+
+    <name>Evolution Game</name>
+
+	<properties>
+        <flex.flashPlayer.command>${basedir}\..\..\setup\flashplayer\flashplayer</flex.flashPlayer.command>
+        <flexmojos.version>4.2-beta</flexmojos.version>
+        <flex.sdk.version>4.6.b.23201</flex.sdk.version>
+        <maven.version>3.0.3</maven.version>
+		<project.debug>true</project.debug>
+    </properties>
+
+    <repositories>
+        <repository>
+            <id>flex-maven-repo</id>
+            <url>https://raw.github.com/aceontech/flex-maven-repo/master</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>flex-maven-repo</id>
+            <name>Flex Maven Repo on GitHub</name>
+            <url>https://raw.github.com/aceontech/flex-maven-repo/master</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <build>
+        <finalName>evolution</finalName>
+
+        <outputDirectory>target</outputDirectory>
+        <testSourceDirectory>tests</testSourceDirectory>
+        <sourceDirectory>src</sourceDirectory>
+
+        <plugins>
+            <plugin>
+                <groupId>org.sonatype.flexmojos</groupId>
+                <artifactId>flexmojos-maven-plugin</artifactId>
+                <version>${flexmojos.version}</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <sourceFile>Evolution.as</sourceFile>
+                    <localesCompiled>
+                        <locale>en_US</locale>
+                    </localesCompiled>
+                    <debug>${project.debug}</debug>
+                    <parameters/>
+                    <storepass/>
+                    <compilerWarnings>
+                        <warn-no-constructor>false</warn-no-constructor>
+                        <warn-duplicate-variable-def>false</warn-duplicate-variable-def>
+                    </compilerWarnings>
+                </configuration>
+
+                <dependencies>
+                    <dependency>
+                        <groupId>com.adobe.flex</groupId>
+                        <artifactId>compiler</artifactId>
+                        <version>${flex.sdk.version}</version>
+                        <type>pom</type>
+                    </dependency>
+                </dependencies>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.adobe.flex.framework</groupId>
+            <artifactId>flex-framework</artifactId>
+            <version>${flex.sdk.version}</version>
+            <type>pom</type>
+        </dependency>
+
+        <dependency>
+            <groupId>org.flexunit</groupId>
+            <artifactId>flexunit</artifactId>
+            <version>4.1.0</version>
+            <type>swc</type>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-as3-flex</artifactId>
+            <version>1.1.3</version>
+            <type>swc</type>
+        </dependency>
+        <dependency>
+            <groupId>org.mockolate</groupId>
+            <artifactId>mockolate</artifactId>
+            <version>0.12.4</version>
+            <classifier>as3</classifier>
+            <type>swc</type>
+        </dependency>
+    </dependencies>
+</project>
