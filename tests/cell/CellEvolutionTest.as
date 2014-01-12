@@ -1,7 +1,8 @@
 package cell
 {
     import grid.EvolutionCell;
-    import grid.EvolutionState;
+    import grid.state.EvolutionStates;
+    import grid.state.IEvolutionState;
 
     import org.hamcrest.assertThat;
     import org.hamcrest.object.equalTo;
@@ -33,14 +34,14 @@ package cell
          */
         public function testDeadToDeadEvolution():void
         {
-            evoCell.state = EvolutionState.DEAD;
+            evoCell.state = EvolutionStates.DEAD;
             for (var i:int = 0; i < 8; i++)
             {
                 if (i == 3) continue;
 
-                evoCell.neighbors = generateNeighbors(i, EvolutionState.ALIVE);
+                evoCell.neighbors = generateNeighbors(i, EvolutionStates.ALIVE);
                 evoCell.evolute();
-                assertThat(evoCell.state, equalTo(EvolutionState.DEAD))
+                assertThat(evoCell.state, equalTo(EvolutionStates.DEAD))
             }
         }
 
@@ -51,10 +52,10 @@ package cell
          */
         public function testDeadToAliveEvolution():void
         {
-            evoCell.state = EvolutionState.DEAD;
-            evoCell.neighbors = generateNeighbors(3, EvolutionState.ALIVE);
+            evoCell.state = EvolutionStates.DEAD;
+            evoCell.neighbors = generateNeighbors(3, EvolutionStates.ALIVE);
             evoCell.evolute();
-            assertThat(evoCell.state, equalTo(EvolutionState.ALIVE))
+            assertThat(evoCell.state, equalTo(EvolutionStates.ALIVE))
         }
 
         [Test]
@@ -64,12 +65,12 @@ package cell
          */
         public function testAliveToAliveEvolution():void
         {
-            evoCell.state = EvolutionState.ALIVE;
+            evoCell.state = EvolutionStates.ALIVE;
             for (var i:int = 2; i <= 3; i++)
             {
-                evoCell.neighbors = generateNeighbors(i, EvolutionState.ALIVE);
+                evoCell.neighbors = generateNeighbors(i, EvolutionStates.ALIVE);
                 evoCell.evolute();
-                assertThat(evoCell.state, equalTo(EvolutionState.ALIVE))
+                assertThat(evoCell.state, equalTo(EvolutionStates.ALIVE))
             }
         }
 
@@ -80,18 +81,18 @@ package cell
          */
         public function testAliveToDeadEvolution():void
         {
-            evoCell.state = EvolutionState.ALIVE;
+            evoCell.state = EvolutionStates.ALIVE;
             for (var i:int = 0; i <= 8; i++)
             {
                 if (i == 2 || i == 3) continue;
 
-                evoCell.neighbors = generateNeighbors(i, EvolutionState.ALIVE);
+                evoCell.neighbors = generateNeighbors(i, EvolutionStates.ALIVE);
                 evoCell.evolute();
-                assertThat(evoCell.state, equalTo(EvolutionState.DEAD))
+                assertThat(evoCell.state, equalTo(EvolutionStates.DEAD))
             }
         }
 
-        private function generateNeighbors(count:int, state:EvolutionState):Vector.<EvolutionCell>
+        private static function generateNeighbors(count:int, state:IEvolutionState):Vector.<EvolutionCell>
         {
             var neighbors:Vector.<EvolutionCell> = new Vector.<EvolutionCell>(count, true);
             for (var i:int = 0; i < count; i++)

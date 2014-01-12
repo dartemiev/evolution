@@ -1,5 +1,9 @@
 package grid
 {
+    import grid.state.EvolutionState;
+    import grid.state.EvolutionStates;
+    import grid.state.IEvolutionState;
+
     /**
      * A single cell that has state of evolution (dead, alive, etc.) and displays
      * this state each generation step.
@@ -10,7 +14,7 @@ package grid
          * A state of cell before evaluation. Each time when state of cell is
          * changed, this value is last state of cell.
          */
-        private var _oldState:EvolutionState;
+        private var _oldState:IEvolutionState;
 
         private var aliveNeighborsCount:int;
 
@@ -39,7 +43,7 @@ package grid
             for (var i:int = 0; i < neighbors.length; i++)
             {
                 var neighbor:EvolutionCell = neighbors[i];
-                if (neighbor.state == EvolutionState.ALIVE)
+                if (neighbor.state == EvolutionStates.ALIVE)
                 {
                     aliveNeighborsCount++;
                 }
@@ -50,23 +54,12 @@ package grid
             needNormalize = false;
         }
 
-        public function evolute():void
+        public function evolute():Boolean
         {
-            if (_state == EvolutionState.DEAD && aliveNeighborsCount == 3)
-            {
-                _state = EvolutionState.ALIVE;
-            }
-            else
-            if (_state == EvolutionState.ALIVE && (aliveNeighborsCount == 2 || aliveNeighborsCount == 3))
-            {
-                _state = EvolutionState.ALIVE;
-            }
-            else
-            {
-                _state = EvolutionState.DEAD;
-            }
+            _state = _state.nextState(aliveNeighborsCount);
 
-            if (_oldState != _state)
+            var evolved:Boolean = _oldState != _state;
+            if (evolved)
             {
                 needNormalize = true;
                 for each (var neighbor:EvolutionCell in _neighbors)
@@ -74,13 +67,16 @@ package grid
                     neighbor.needNormalize = true;
                 }
             }
+
             firstRun = false;
+            return evolved;
         }
 
         public function toString():String
         {
-            return "EvolutionCell(rowIndex=" + rowIndex + ", columnIndex=" + columnIndex +
-                ", oldState=" + _oldState + ", state=" + state + ")";
+            return "EvolutionCell(rowIndex=" + rowIndex + ", columnIndex=" + columnIndex + ", " +
+                "aliveNeighborsCount=" + aliveNeighborsCount + ", " +
+                "oldState=" + _oldState + ", state=" + state + ")";
         }
 
         // --------------------------
@@ -130,18 +126,19 @@ package grid
         public function set neighbors(value:Vector.<EvolutionCell>):void
         {
             _neighbors = value;
+            normalize();
         }
 
         // --------------------------
         //  Current state
         // --------------------------
-        private var _state:EvolutionState;
+        private var _state:IEvolutionState;
 
         /**
          * Current state of cell.
-         * @see EvolutionState
+         * @see grid.state.EvolutionState
          */
-        public function get state():EvolutionState
+        public function get state():IEvolutionState
         {
             return _state;
         }
@@ -149,7 +146,7 @@ package grid
         /**
          * @private
          */
-        public function set state(value:EvolutionState):void
+        public function set state(value:IEvolutionState):void
         {
             _state = value;
         }

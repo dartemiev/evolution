@@ -5,12 +5,27 @@ package grid
     import flash.utils.Dictionary;
     import flash.utils.getTimer;
 
+    import grid.state.AliveEvolutionState;
+    import grid.state.EvolutionState;
+    import grid.state.EvolutionStates;
+    import grid.state.EvolutionStates;
+    import grid.state.IEvolutionState;
+
     public class EvolutionGrid
     {
         /**
          * A map of cells involved in evolution by each generation step.
          */
         protected var cellsMap:Dictionary;
+        /**
+         * A map of cells are needed to normalize after evolution step.
+         * This is a part of optimization and performance improvement.
+         */
+        protected var normalizeCellsMap:Dictionary = new Dictionary(true);
+        protected var evoluteCellsMap:Dictionary = new Dictionary(true);
+
+        private var tracer:BitmapData;
+        private var tracerEtalon:BitmapData;
 
         /**
          * Creates new instance of evolution grid.
@@ -19,6 +34,9 @@ package grid
          */
         public function EvolutionGrid(rowCount:int, columnCount:int)
         {
+            tracerEtalon = new BitmapData(columnCount, rowCount, false, EvolutionStates.DEAD.color);
+            tracer = tracerEtalon.clone();
+
             createCells(rowCount, columnCount);
             initialize();
         }
@@ -29,38 +47,51 @@ package grid
          * @param columnIndex The index of cell in the column.
          * @param state New state of cell.
          */
-        public function updateCellState(rowIndex:int, columnIndex:int, state:EvolutionState):void
+        public function updateCellState(rowIndex:int, columnIndex:int, state:IEvolutionState):void
         {
             var hashCode:String = getCellHasCode(rowIndex, columnIndex);
             var cell:EvolutionCell = cellsMap[hashCode];
             cell.state = state;
-            normalizeCell(cell);
+            registerCell(cell);
+
+            tracer.setPixel(cell.columnIndex, cell.rowIndex, state.color);
         }
 
         public function evolute():void
         {
-            var cell:EvolutionCell;
-            // evolute all cells
-            var stamp:Number = getTimer();
-            for each (cell in cellsMap)
-            {
-                cell.evolute();
-            }
-            trace("Evolute", getTimer() - stamp, "ms");
-
-            stamp = getTimer();
             normalizeCells();
-            trace("Normalize", getTimer() - stamp, "ms");
+
+            tracer = tracerEtalon.clone();
+            tracer.lock();
+
+            var evolutionMap:Dictionary = evoluteCellsMap;
+            normalizeCellsMap = new Dictionary(true);
+            evoluteCellsMap = new Dictionary(true);
+
+            var cell:EvolutionCell;
+            for each (cell in evolutionMap)
+            {
+                var evolved:Boolean = cell.evolute();
+                var state:IEvolutionState = cell.state;
+                if (evolved == true || state == EvolutionStates.ALIVE)
+                {
+                    registerCell(cell);
+                    tracer.setPixel(cell.columnIndex, cell.rowIndex, state.color);
+                }
+                else
+                {
+//                    var hasCode:String = getCellHasCode(cell.rowIndex, cell.columnIndex);
+//                    delete normalizeCellsMap[hasCode];
+//                    delete evoluteCellsMap[hasCode];
+                }
+            }
+            tracer.unlock();
         }
 
         public function traceTo(canvas:BitmapData):void
         {
             canvas.lock();
-            for each (var cell:EvolutionCell in cellsMap)
-            {
-                var color:uint = cell.state.color;
-                canvas.setPixel(cell.columnIndex, cell.rowIndex, color);
-            }
+            canvas.draw(tracer);
             canvas.unlock();
         }
 
@@ -91,7 +122,7 @@ package grid
             for each (var cell:EvolutionCell in cellsMap)
             {
                 cell.neighbors = findCellNeighbors(cell.rowIndex, cell.columnIndex);
-                cell.state = EvolutionState.DEAD;
+                cell.state = EvolutionStates.DEAD;
             }
         }
 
@@ -110,18 +141,44 @@ package grid
 
         private function normalizeCells():void
         {
-            for each (var cell:EvolutionCell in cellsMap)
+            for each (var cell:EvolutionCell in normalizeCellsMap)
             {
                 cell.normalize();
             }
         }
 
-        private function normalizeCell(cell:EvolutionCell):void
+        /**
+         * Resisters cell to normalize it and cell's neighbors.
+         */
+        private function registerCellToNormalize(cell:EvolutionCell):void
         {
-            cell.normalize();
+            var hasCode:String = getCellHasCode(cell.rowIndex, cell.columnIndex);
+            if (normalizeCellsMap[hasCode] == null)
+            {
+                normalizeCellsMap[hasCode] = cell;
+            }
+        }
+
+        /**
+         * Resisters cell for evolution it next evolution step.
+         */
+        private function registerCellToEvolution(cell:EvolutionCell):void
+        {
+            var hasCode:String = getCellHasCode(cell.rowIndex, cell.columnIndex);
+            if (evoluteCellsMap[hasCode] == null)
+            {
+                evoluteCellsMap[hasCode] = cell;
+            }
+        }
+
+        private function registerCell(cell:EvolutionCell):void
+        {
+            registerCellToEvolution(cell);
+            registerCellToNormalize(cell);
             for each (var neighbor:EvolutionCell in cell.neighbors)
             {
-                neighbor.normalize();
+                registerCellToEvolution(neighbor);
+                registerCellToNormalize(neighbor);
             }
         }
 

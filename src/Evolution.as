@@ -9,35 +9,35 @@ package {
     import flash.utils.getTimer;
 
     import grid.EvolutionGrid;
-    import grid.EvolutionState;
+    import grid.state.EvolutionStates;
 
-    [SWF(backgroundColor=0x000000)]
+    [SWF(backgroundColor=0x000000, frameRate=31)]
     public class Evolution extends Sprite {
-        private var generation:int = 0;
+        private static const GRID_WIDTH:int = 300;
+        private static const GRID_HEIGHT:int = 200;
         /**
          * The visible representation of current state for each generations.
          */
         private var canvas:BitmapData;
         private var evoGrid:EvolutionGrid;
         private var evoTimer:Timer;
+        private var generation:int = 0;
 
         public function Evolution() {
-            var width:int = 100;
-            var height:int = 100;
-            canvas = new BitmapData(width, height, false, 0xcccccc);
+            canvas = new BitmapData(GRID_WIDTH, GRID_HEIGHT, false, 0xcccccc);
             var bitmap:Bitmap = new Bitmap(canvas);
             bitmap.scaleX = bitmap.scaleY = 2;
             addChild(bitmap);
 
-            evoGrid = new EvolutionGrid(height, width);
-            evoGrid.updateCellState(0, 2, EvolutionState.ALIVE);
-            evoGrid.updateCellState(1, 2, EvolutionState.ALIVE);
-            evoGrid.updateCellState(2, 2, EvolutionState.ALIVE);
-            evoGrid.updateCellState(1, 0, EvolutionState.ALIVE);
-            evoGrid.updateCellState(2, 1, EvolutionState.ALIVE);
-            for (var i:int = 0; i < 500; i++)
+            evoGrid = new EvolutionGrid(GRID_HEIGHT, GRID_WIDTH);
+            evoGrid.updateCellState(0, 2, EvolutionStates.ALIVE);
+            evoGrid.updateCellState(1, 2, EvolutionStates.ALIVE);
+            evoGrid.updateCellState(2, 2, EvolutionStates.ALIVE);
+            evoGrid.updateCellState(1, 0, EvolutionStates.ALIVE);
+            evoGrid.updateCellState(2, 1, EvolutionStates.ALIVE);
+            for (var i:int = 0; i < 1500; i++)
             {
-                evoGrid.updateCellState(Math.random() * height, Math.random() * width, EvolutionState.ALIVE);
+                evoGrid.updateCellState(Math.random() * GRID_HEIGHT, Math.random() * GRID_WIDTH, EvolutionStates.ALIVE);
             }
             evoGrid.traceTo(canvas);
 
@@ -46,13 +46,33 @@ package {
             evoTimer = new Timer(80);
             evoTimer.addEventListener(TimerEvent.TIMER, onEvaluate);
             evoTimer.start();
+
+            stage.addEventListener(MouseEvent.CLICK, onAddNewCells);
+        }
+
+        private function onAddNewCells(event:MouseEvent):void
+        {
+            var rowIndex:int = Math.random() * GRID_HEIGHT;
+            var colIndex:int = Math.random() * GRID_WIDTH;
+            evoGrid.updateCellState(rowIndex + 0, colIndex + 0, EvolutionStates.ALIVE);
+            evoGrid.updateCellState(rowIndex + 0, colIndex + 1, EvolutionStates.ALIVE);
+            evoGrid.updateCellState(rowIndex + 0, colIndex + 2, EvolutionStates.ALIVE);
+            evoGrid.updateCellState(rowIndex + 1, colIndex + 0, EvolutionStates.ALIVE);
+            evoGrid.updateCellState(rowIndex + 1, colIndex + 2, EvolutionStates.ALIVE);
+            evoGrid.updateCellState(rowIndex + 2, colIndex + 0, EvolutionStates.ALIVE);
+            evoGrid.updateCellState(rowIndex + 2, colIndex + 1, EvolutionStates.ALIVE);
+            evoGrid.updateCellState(rowIndex + 2, colIndex + 2, EvolutionStates.ALIVE);
         }
 
         private function onEvaluate(event:Event):void
         {
-            evoGrid.evolute();
-            evoGrid.traceTo(canvas);
             generation++;
+
+            var stamp:Number = getTimer();
+            evoGrid.evolute();
+            trace("Evolute", getTimer() - stamp, "ms");
+
+            evoGrid.traceTo(canvas);
         }
     }
 }

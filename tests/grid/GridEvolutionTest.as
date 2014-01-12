@@ -2,6 +2,8 @@ package grid
 {
     import flash.geom.Point;
 
+    import grid.state.EvolutionStates;
+
     import org.hamcrest.assertThat;
     import org.hamcrest.object.equalTo;
 
@@ -24,13 +26,13 @@ package grid
             for each (var position:Point in positions)
             {
                 evoCell = evoGrid.getCellAt(position.x, position.y);
-                assertThat(evoCell.state, equalTo(EvolutionState.DEAD));
+                assertThat(evoCell.state, equalTo(EvolutionStates.DEAD));
 
-                evoGrid.updateCellState(position.x, position.y, EvolutionState.ALIVE);
-                assertThat(evoCell.state, equalTo(EvolutionState.ALIVE));
+                evoGrid.updateCellState(position.x, position.y, EvolutionStates.ALIVE);
+                assertThat(evoCell.state, equalTo(EvolutionStates.ALIVE));
 
-                evoGrid.updateCellState(position.x, position.y, EvolutionState.DEAD);
-                assertThat(evoCell.state, equalTo(EvolutionState.DEAD));
+                evoGrid.updateCellState(position.x, position.y, EvolutionStates.DEAD);
+                assertThat(evoCell.state, equalTo(EvolutionStates.DEAD));
             }
         }
 
@@ -41,12 +43,12 @@ package grid
             var positions:Vector.<Point> = getAliveCellsSet1();
             for each (var position:Point in positions)
             {
-                evoGrid.updateCellState(position.x, position.y, EvolutionState.ALIVE);
+                evoGrid.updateCellState(position.x, position.y, EvolutionStates.ALIVE);
             }
             evoGrid.evolute();
 
-            assertThat(evoGrid.getCellAt(0, 1).state, equalTo(EvolutionState.ALIVE));
-//            assertThat(evoGrid.getCellAt(1, 2).state, equalTo(EvolutionState.ALIVE));
+//            assertThat(evoGrid.getCellAt(0, 1).state, equalTo(EvolutionStates.ALIVE));
+//            assertThat(evoGrid.getCellAt(1, 2).state, equalTo(EvolutionStates.ALIVE));
         }
 
         private static function getAliveCellsSet1():Vector.<Point>
