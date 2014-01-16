@@ -1,8 +1,8 @@
-package cell
+package evolution.cell
 {
-    import grid.EvolutionCell;
-    import grid.state.EvolutionStates;
-    import grid.state.IEvolutionState;
+    import evolution.grid.EvolutionCell;
+    import evolution.grid.state.EvolutionStates;
+    import evolution.grid.state.IEvolutionState;
 
     import org.hamcrest.assertThat;
     import org.hamcrest.object.equalTo;

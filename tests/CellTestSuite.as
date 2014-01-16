@@ -1,7 +1,7 @@
 package
 {
-    import cell.CellEvolutionTest;
-    import cell.CellNeighborsTest;
+    import evolution.cell.CellEvolutionTest;
+    import evolution.cell.CellNeighborsTest;
 
     [Suite]
     [RunWith("org.flexunit.runners.Suite")]

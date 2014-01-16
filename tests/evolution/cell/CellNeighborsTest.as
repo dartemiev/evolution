@@ -1,7 +1,7 @@
-package cell
+package evolution.cell
 {
-    import grid.EvolutionCell;
-    import grid.TestableEvolutionGrid;
+    import evolution.grid.EvolutionCell;
+    import evolution.grid.TestableEvolutionGrid;
 
     import org.hamcrest.assertThat;
     import org.hamcrest.object.equalTo;

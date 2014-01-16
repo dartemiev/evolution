@@ -1,15 +1,11 @@
-package grid
+package evolution.grid
 {
+    import evolution.grid.state.EvolutionStates;
+    import evolution.grid.state.IEvolutionState;
+
     import flash.display.BitmapData;
     import flash.geom.Point;
     import flash.utils.Dictionary;
-    import flash.utils.getTimer;
-
-    import grid.state.AliveEvolutionState;
-    import grid.state.EvolutionState;
-    import grid.state.EvolutionStates;
-    import grid.state.EvolutionStates;
-    import grid.state.IEvolutionState;
 
     public class EvolutionGrid
     {
@@ -77,12 +73,6 @@ package grid
                 {
                     registerCell(cell);
                     tracer.setPixel(cell.columnIndex, cell.rowIndex, state.color);
-                }
-                else
-                {
-//                    var hasCode:String = getCellHasCode(cell.rowIndex, cell.columnIndex);
-//                    delete normalizeCellsMap[hasCode];
-//                    delete evoluteCellsMap[hasCode];
                 }
             }
             tracer.unlock();

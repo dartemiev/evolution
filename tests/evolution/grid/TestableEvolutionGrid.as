@@ -1,4 +1,4 @@
-package grid
+package evolution.grid
 {
     public class TestableEvolutionGrid extends EvolutionGrid
     {
@@ -11,16 +11,6 @@ package grid
         {
             var hashCode:String = getCellHasCode(rowIndex, columnIndex);
             return cellsMap[hashCode];
-        }
-
-        public function get cells():Vector.<EvolutionCell>
-        {
-            var cells:Vector.<EvolutionCell> = new <EvolutionCell>[];
-            for each (var cell:EvolutionCell in cellsMap)
-            {
-                cells.push(cell);
-            }
-            return cells;
         }
     }
 }

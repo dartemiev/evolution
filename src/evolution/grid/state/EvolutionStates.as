@@ -1,4 +1,4 @@
-package grid.state
+package evolution.grid.state
 {
     /**
      * <code>EvolutionStates</code> is enumeration with available states for

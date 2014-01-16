@@ -1,8 +1,8 @@
-package grid
+package evolution.grid
 {
-    import grid.state.EvolutionState;
-    import grid.state.EvolutionStates;
-    import grid.state.IEvolutionState;
+    import evolution.grid.state.EvolutionState;
+    import evolution.grid.state.EvolutionStates;
+    import evolution.grid.state.IEvolutionState;
 
     /**
      * A single cell that has state of evolution (dead, alive, etc.) and displays
@@ -136,7 +136,7 @@ package grid
 
         /**
          * Current state of cell.
-         * @see grid.state.EvolutionState
+         * @see evolution.grid.state.EvolutionState
          */
         public function get state():IEvolutionState
         {

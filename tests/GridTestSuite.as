@@ -1,6 +1,6 @@
 package
 {
-    import grid.GridEvolutionTest;
+    import evolution.grid.GridEvolutionTest;
 
     [Suite]
     [RunWith("org.flexunit.runners.Suite")]

@@ -1,4 +1,4 @@
-package grid.state
+package evolution.grid.state
 {
     /**
      * A state for ALIVE cell.
